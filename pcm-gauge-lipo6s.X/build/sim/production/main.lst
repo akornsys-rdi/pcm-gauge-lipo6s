@@ -1,0 +1,1074 @@
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001     LIST        P=PIC12F683          ; list directive to define processor
+                      00002     #INCLUDE    <p12f683.inc>         ; processor specific variable definitions
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC12F683 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00459         LIST
+                      00003 
+                      00004 
+                      00005 ; CONFIG
+                      00006 ; __config 0xF0C4
+2007   30C4           00007  __CONFIG _FOSC_INTOSCIO & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_OFF & _IESO_
+                            OFF & _FCMEN_OFF
+                      00008 
+                      00009 ;Pinout
+                      00010 ;   GP0/AN0 <- ADC  Volt (voltage divider 8.5:1)
+                      00011 ;   GP1/AN1 <- ADC  Temp (LM35)
+                      00012 ;   GP2     -> PWM  buzzer (without osc)
+                      00013 ;   GP4     -> GPIO LED Warn
+                      00014 ;   GP5     -> GPIO LED ok
+                      00015 
+                      00016 
+  00000093            00017 Max_Volt    equ     0x93                ;  limite superior ADC0 (4.2 -> 25.2)
+  0000006E            00018 Min_Volt    equ     0x6E                ;  limite inferior ADC0 (3.1 -> 18.6)
+  00000026            00019 Max_Temp    equ     0x26                ;  limite superior ADC1 (75º)
+  00000093            00020 G_100       equ     0x93                ; 100%
+  00000090            00021 G_083       equ     0x90                ; 83%
+  0000008C            00022 G_066       equ     0x8C                ; 66%
+  00000087            00023 G_050       equ     0x87                ; 50%
+  00000082            00024 G_033       equ     0x82                ; 33%
+  0000007B            00025 G_016       equ     0x7B                ; 16%
+  00000071            00026 G_000       equ     0x71                ; 0%
+                      00027 
+                      00028     CBLOCK 0x3E                             ;  posiciones sólo en banco 0
+  0000003E            00029     ADC0_LPFReg1                           ;  no mover de posición los registros LPF, posiciones fijas d
+                            el 0x3E al 0x4D
+  0000003F            00030     ADC0_LPFReg2                           ;  se usa direccionamiento indirecto
+  00000040            00031     ADC0_LPFReg3
+  00000041            00032     ADC0_LPFReg4
+  00000042            00033     ADC0_LPFReg5
+  00000043            00034     ADC0_LPFReg6
+  00000044            00035     ADC0_LPFReg7
+  00000045            00036     ADC0_LPFReg8
+  00000046            00037     ADC0_LPFReg9
+  00000047            00038     ADC0_LPFReg10
+  00000048            00039     ADC0_LPFReg11
+  00000049            00040     ADC0_LPFReg12
+  0000004A            00041     ADC0_LPFReg13
+  0000004B            00042     ADC0_LPFReg14
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  0000004C            00043     ADC0_LPFReg15
+  0000004D            00044     ADC0_LPFReg16
+  0000004E            00045     ADC0_Accumulator_HI
+  0000004F            00046     ADC0_Accumulator_LO
+                      00047     ENDC
+                      00048 
+                      00049     CBLOCK 0x5E                             ;  posiciones sólo en banco 0
+  0000005E            00050     ADC1_LPFReg1                           ;  no mover de posición los registros LPF, posiciones fijas d
+                            el 0x5E al 0x6D
+  0000005F            00051     ADC1_LPFReg2                           ;  se usa direccionamiento indirecto
+  00000060            00052     ADC1_LPFReg3
+  00000061            00053     ADC1_LPFReg4
+  00000062            00054     ADC1_LPFReg5
+  00000063            00055     ADC1_LPFReg6
+  00000064            00056     ADC1_LPFReg7
+  00000065            00057     ADC1_LPFReg8
+  00000066            00058     ADC1_LPFReg9
+  00000067            00059     ADC1_LPFReg10
+  00000068            00060     ADC1_LPFReg11
+  00000069            00061     ADC1_LPFReg12
+  0000006A            00062     ADC1_LPFReg13
+  0000006B            00063     ADC1_LPFReg14
+  0000006C            00064     ADC1_LPFReg15
+  0000006D            00065     ADC1_LPFReg16
+  0000006E            00066     ADC1_Accumulator_HI
+  0000006F            00067     ADC1_Accumulator_LO
+                      00068     ENDC
+                      00069 
+                      00070     CBLOCK 0x70                             ;  posiciones comunes en bancos
+  00000070            00071     W_ISR
+  00000071            00072     STATUS_ISR
+  00000072            00073     ALARM_STAT
+  00000073            00074     DLoop1
+  00000074            00075     DLoop2
+  00000075            00076     DLoop3
+  00000076            00077     TmCount
+  00000077            00078     Dutycycle_ADC0
+  00000078            00079     Dutycycle_ADC1
+  00000079            00080     Dutycycle_HI
+  0000007A            00081     Dutycycle_LO
+  0000007B            00082     Aux
+                      00083     ENDC
+                      00084 
+                      00085 ;------------------------------------------------------------------------------
+                      00086 ; RESET VECTOR
+                      00087 ;------------------------------------------------------------------------------
+                      00088 RES_VECT    code    0x0000  ; processor reset vector
+0000   2???           00089     call    setup
+0001   2???           00090     goto    main
+                      00091 
+                      00092 ISR_VECT    code    0x0004  ; processor isr vector
+0004   2???           00093     goto    isr
+                      00094 
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00095 ;------------------------------------------------------------------------------
+                      00096 ; MAIN PROGRAM
+                      00097 ;------------------------------------------------------------------------------
+                      00098 MAIN_PROG   code            ; let linker place main program
+                      00099 
+                      00100 ; TODO asegurar bancos
+                      00101 
+0000                  00102 isr                         ; each ~8s
+                      00103 ;interrupción TIMER0
+0000   00F0           00104     movwf   W_ISR                           ;  guardar estado
+0001   0E03           00105     swapf   STATUS,W
+0002   00F1           00106     movwf   STATUS_ISR
+0003   0AF6           00107     incf    TmCount,F                  ;count 255 interrupts
+0004   1903           00108     btfsc   STATUS,Z
+0005   1472           00109     bsf     ALARM_STAT,0                ;then print
+0006   1283           00110     banksel INTCON                          ;  desactivar flag de interrupción
+0007   110B           00111     bcf     INTCON,T0IF
+0008   0E71           00112     swapf   STATUS_ISR,W                    ;  recuperar estado
+0009   0083           00113     movwf   STATUS
+000A   0EF0           00114     swapf   W_ISR,F
+000B   0E70           00115     swapf   W_ISR,W
+000C   0009           00116     retfie
+                      00117 
+000D                  00118 setup
+000D   1683           00119     banksel OSCCON
+000E   3071           00120     movlw   0x71
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000F   008F           00121     movwf   OSCCON
+                      00122 ;configurar puertos
+0010   1283           00123     banksel GPIO                            ;  inicializar puertos
+0011   0185           00124     clrf    GPIO
+0012   3007           00125     movlw   0x07                            ;  comparador off
+0013   0099           00126     movwf   CMCON0
+0014   1683           00127     banksel ANSEL                           ;  máscara a modulo adc
+0015   3023           00128     movlw   0x23                            ;  selecciona AN1 con fs osc/32
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0016   009F           00129     movwf   ANSEL
+0017   300F           00130     movlw   0x0F                            ;  configura todos los pines como entrada
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0018   0085           00131     movwf   TRISIO
+                      00132 ;configurar PWM
+0019   3037           00133     movlw   0x37                            ;  establece frecuencia PWM (1.22 KHz)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+001A   0092           00134     movwf   PR2
+001B   1283           00135     banksel CCP1CON                         ;  PWM modo activo a nivel alto
+001C   300C           00136     movlw   0x0C
+001D   0095           00137     movwf   CCP1CON
+001E   0193           00138     clrf    CCPR1L                          ;  MS byte factor de servicio
+001F   108C           00139     bcf     PIR1,TMR2IF                     ;  borra el flag de igualdad entre timer2 y pr2
+0020   3007           00140     movlw   0x07                            ;  timer2 on, no postscaler, prescaler 16
+0021   0092           00141     movwf   T2CON
+0022   1C8C           00142     btfss   PIR1,TMR2IF                     ;  espera desbordamiento en timer2
+0023   2???           00143     goto    $-1
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0024   1683           00144     banksel TRISIO                          ;  GPIO2 como salida
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0025   1105           00145     bcf     TRISIO,2
+                      00146 ;configurar ADC y LPF
+0026   1283           00147     banksel ADCON0                          ;  ADC on, AN0 seleccionado, MSB a la izquierda, Vdd como Vr
+                            ef
+0027   3001           00148     movlw   0x01                            ; 0x05 para adc1
+0028   009F           00149     movwf   ADCON0
+0029   2???           00150     call    Delay_4us                       ;  retardo de adquisición
+002A   149F           00151     bsf     ADCON0,GO                       ;  inicia ciclo de ADC
+002B   189F           00152     btfsc   ADCON0,GO                       ;  espera hasta que complete el ciclo
+002C   2???           00153     goto    $-1                             ;  se desecha la primera lectura
+002D   149F           00154     bsf     ADCON0,GO                       ;  inicia ciclo del ADC
+002E   189F           00155     btfsc   ADCON0,GO                       ;  espera hasta que complete el ciclo
+002F   2???           00156     goto    $-1
+0030   081E           00157     movf    ADRESH,W                        ;  lee el MS byte del ADC
+0031   00BE           00158     movwf   ADC0_LPFReg1                    ;  inicializa los registros del LPF con el valor leído
+0032   00BF           00159     movwf   ADC0_LPFReg2
+0033   00C0           00160     movwf   ADC0_LPFReg3
+0034   00C1           00161     movwf   ADC0_LPFReg4
+0035   00C2           00162     movwf   ADC0_LPFReg5
+0036   00C3           00163     movwf   ADC0_LPFReg6
+0037   00C4           00164     movwf   ADC0_LPFReg7
+0038   00C5           00165     movwf   ADC0_LPFReg8
+0039   00C6           00166     movwf   ADC0_LPFReg9
+003A   00C7           00167     movwf   ADC0_LPFReg10
+003B   00C8           00168     movwf   ADC0_LPFReg11
+003C   00C9           00169     movwf   ADC0_LPFReg12
+003D   00CA           00170     movwf   ADC0_LPFReg13
+003E   00CB           00171     movwf   ADC0_LPFReg14
+003F   00CC           00172     movwf   ADC0_LPFReg15
+0040   00CD           00173     movwf   ADC0_LPFReg16
+0041   01CF           00174     clrf    ADC0_Accumulator_LO                  ;  inicializa el acumulador de LPF
+0042   01CE           00175     clrf    ADC0_Accumulator_HI
+0043   3005           00176     movlw   0x05
+0044   009F           00177     movwf   ADCON0
+0045   2???           00178     call    Delay_4us                       ;  retardo de adquisición
+0046   149F           00179     bsf     ADCON0,GO                       ;  inicia ciclo de ADC
+0047   189F           00180     btfsc   ADCON0,GO                       ;  espera hasta que complete el ciclo
+0048   2???           00181     goto    $-1
+0049   081E           00182     movf    ADRESH,W                        ;  lee el MS byte del ADC
+004A   00DE           00183     movwf   ADC1_LPFReg1                    ;  inicializa los registros del LPF con el valor leído
+004B   00DF           00184     movwf   ADC1_LPFReg2
+004C   00E0           00185     movwf   ADC1_LPFReg3
+004D   00E1           00186     movwf   ADC1_LPFReg4
+004E   00E2           00187     movwf   ADC1_LPFReg5
+004F   00E3           00188     movwf   ADC1_LPFReg6
+0050   00E4           00189     movwf   ADC1_LPFReg7
+0051   00E5           00190     movwf   ADC1_LPFReg8
+0052   00E6           00191     movwf   ADC1_LPFReg9
+0053   00E7           00192     movwf   ADC1_LPFReg10
+0054   00E8           00193     movwf   ADC1_LPFReg11
+0055   00E9           00194     movwf   ADC1_LPFReg12
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0056   00EA           00195     movwf   ADC1_LPFReg13
+0057   00EB           00196     movwf   ADC1_LPFReg14
+0058   00EC           00197     movwf   ADC1_LPFReg15
+0059   00ED           00198     movwf   ADC1_LPFReg16
+005A   01EF           00199     clrf    ADC1_Accumulator_LO                  ;  inicializa el acumulador de LPF
+005B   01EE           00200     clrf    ADC1_Accumulator_HI
+                      00201 ;configurar interrupciones
+005C   30A0           00202     movlw   0xA0                            ;  habilita interrupción por TIMER0
+005D   008B           00203     movwf   INTCON
+                      00204 ;configurar TIMER0
+005E   1683           00205     banksel OPTION_REG                      ;  prescaler 256 a TIMER0 (interrupción cada ~32ms)
+005F   3087           00206     movlw   0x87
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0060   0081           00207     movwf   OPTION_REG
+0061   1283           00208     banksel TMR0                            ;  precarga de TIMER0 e inicio
+0062   3000           00209     movlw   0x00
+0063   0081           00210     movwf   TMR0
+                      00211 ;valores iniciales variables
+0064   01F2           00212     clrf    ALARM_STAT
+0065   2???           00213     call    LPF_ADC_Read
+0066   2???           00214     call    LPF_ADC_Read
+0067   2???           00215     call    LPF_ADC_Read
+0068   2???           00216     call    LPF_ADC_Read
+0069   2???           00217     call    LPF_ADC_Read
+006A   2???           00218     call    LPF_ADC_Read
+006B   2???           00219     call    LPF_ADC_Read
+006C   2???           00220     call    LPF_ADC_Read
+006D   2???           00221     call    LPF_ADC_Read
+006E   2???           00222     call    LPF_ADC_Read
+006F   2???           00223     call    LPF_ADC_Read
+0070   2???           00224     call    LPF_ADC_Read
+0071   2???           00225     call    LPF_ADC_Read
+0072   2???           00226     call    LPF_ADC_Read
+0073   2???           00227     call    LPF_ADC_Read
+0074   2???           00228     call    LPF_ADC_Read
+0075   2???           00229     call    LPF_ADC_Read
+0076   0008           00230     return
+                      00231 
+0077                  00232 main                        ; main code
+0077   1283           00233     banksel GPIO            ; lamp test & beep
+0078   1605           00234     bsf     GPIO,4
+0079   1685           00235     bsf     GPIO,5
+007A   303F           00236     movlw   0x3F
+007B   2???           00237     call    Set_Dutycycle
+007C   2???           00238     call    Delay_250ms
+007D   1205           00239     bcf     GPIO,4
+007E   1285           00240     bcf     GPIO,5
+007F   3000           00241     movlw   0x00
+0080   2???           00242     call    Set_Dutycycle
+0081   2???           00243     call    Delay_250ms             ; delay
+0082   2???           00244     call    Delay_250ms
+0083   2???           00245     call    Delay_250ms
+0084   2???           00246     call    Delay_250ms
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0085   2???           00247     call    LPF_ADC_Read            ; fuel gauge
+0086   0000           00248     nop
+0087   0877           00249     movf    Dutycycle_ADC0,W        ;v<=16%
+0088   3C7B           00250     sublw   G_016
+0089   1803           00251     btfsc   STATUS,C
+008A   2???           00252     goto    $+0x1F
+008B   0877           00253     movf    Dutycycle_ADC0,W        ;v<=33%
+008C   3C82           00254     sublw   G_033
+008D   1803           00255     btfsc   STATUS,C
+008E   2???           00256     goto    $+0x1F
+008F   0877           00257     movf    Dutycycle_ADC0,W        ;v<=50%
+0090   3C87           00258     sublw   G_050
+0091   1803           00259     btfsc   STATUS,C
+0092   2???           00260     goto    $+0x1F
+0093   0877           00261     movf    Dutycycle_ADC0,W        ;v<=66%
+0094   3C8C           00262     sublw   G_066
+0095   1803           00263     btfsc   STATUS,C
+0096   2???           00264     goto    $+0x0E
+0097   0877           00265     movf    Dutycycle_ADC0,W        ;v<=83%
+0098   3C90           00266     sublw   G_083
+0099   1803           00267     btfsc   STATUS,C
+009A   2???           00268     goto    $+6
+009B   0000           00269     nop                             ;v>83%
+009C   1685           00270     bsf     GPIO,5                  ;ggg
+009D   2???           00271     call    Delay_250ms
+009E   1285           00272     bcf     GPIO,5
+009F   2???           00273     call    Delay_250ms
+00A0   1685           00274     bsf     GPIO,5                  ;gg
+00A1   2???           00275     call    Delay_250ms
+00A2   1285           00276     bcf     GPIO,5
+00A3   2???           00277     call    Delay_250ms
+00A4   1685           00278     bsf     GPIO,5                  ;g
+00A5   2???           00279     call    Delay_250ms
+00A6   1285           00280     bcf     GPIO,5
+00A7   2???           00281     call    Delay_250ms
+00A8   2???           00282     goto    $+0x0D
+00A9   1605           00283     bsf     GPIO,4                  ;rrr
+00AA   2???           00284     call    Delay_250ms
+00AB   1205           00285     bcf     GPIO,4
+00AC   2???           00286     call    Delay_250ms
+00AD   1605           00287     bsf     GPIO,4                  ;rr
+00AE   2???           00288     call    Delay_250ms
+00AF   1205           00289     bcf     GPIO,4
+00B0   2???           00290     call    Delay_250ms
+00B1   1605           00291     bsf     GPIO,4                  ;r
+00B2   2???           00292     call    Delay_250ms
+00B3   1205           00293     bcf     GPIO,4
+00B4   2???           00294     call    Delay_250ms
+00B5   2???           00295     call    Delay_250ms             ; delay
+00B6   2???           00296     call    Delay_250ms
+00B7   2???           00297     call    Delay_250ms
+00B8   2???           00298     call    Delay_250ms
+00B9   1072           00299     bcf     ALARM_STAT,0
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00BA                  00300 loop
+00BA   1C72           00301     btfss   ALARM_STAT,0
+00BB   2???           00302     goto    $+0x13
+00BC   0103           00303     clrw
+00BD   0872           00304     movf    ALARM_STAT,W        ;if ALARM_STAT,0 == HIGH -> print
+00BE   390E           00305     andlw   0x0E
+00BF   1903           00306     btfsc   STATUS,Z
+00C0   2???           00307     goto    $+3
+00C1   1605           00308     bsf     GPIO,4
+00C2   2???           00309     goto    $+2
+00C3   1685           00310     bsf     GPIO,5
+00C4   2???           00311     call    Delay_250ms
+00C5   1205           00312     bcf     GPIO,4
+00C6   1285           00313     bcf     GPIO,5
+00C7   18F2           00314     btfsc   ALARM_STAT,1
+00C8   2???           00315     call    Alarm_VMin
+00C9   1972           00316     btfsc   ALARM_STAT,2
+00CA   2???           00317     call    Alarm_VMax
+00CB   19F2           00318     btfsc   ALARM_STAT,3
+00CC   2???           00319     call    Alarm_TMax
+00CD   1072           00320     bcf     ALARM_STAT,0
+00CE   3001           00321     movlw   0x01
+00CF   05F2           00322     andwf   ALARM_STAT,F
+00D0   2???           00323     call    LPF_ADC_Read
+00D1   0877           00324     movf    Dutycycle_ADC0,W        ;process read
+00D2   3C93           00325     sublw   Max_Volt
+00D3   1C03           00326     btfss   STATUS,C
+00D4   2???           00327     goto    $+0x0A
+00D5   0877           00328     movf    Dutycycle_ADC0,W
+00D6   3C6E           00329     sublw   Min_Volt
+00D7   1803           00330     btfsc   STATUS,C
+00D8   2???           00331     goto    $+8
+00D9   0878           00332     movf    Dutycycle_ADC1,W
+00DA   3C26           00333     sublw   Max_Temp
+00DB   1C03           00334     btfss   STATUS,C
+00DC   2???           00335     goto    $+6
+00DD   2???           00336     goto    loop
+00DE   1572           00337     bsf     ALARM_STAT,2        ;vmax
+00DF   2???           00338     goto    loop
+00E0   14F2           00339     bsf     ALARM_STAT,1        ;vmin
+00E1   2???           00340     goto    loop
+00E2   15F2           00341     bsf     ALARM_STAT,3       ;tmax
+00E3   2???           00342     goto    loop
+                      00343 
+00E4                  00344 Alarm_VMin
+00E4   301F           00345     movlw   0x1F
+00E5   2???           00346     call    Set_Dutycycle
+00E6   2???           00347     call    Delay_75ms
+00E7   3000           00348     movlw   0x00
+00E8   2???           00349     call    Set_Dutycycle
+00E9   2???           00350     call    Delay_75ms
+00EA   1683           00351     banksel PR2
+00EB   3045           00352     movlw   0x45
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00EC   0092           00353     movwf   PR2
+00ED   1283           00354     banksel GPIO
+00EE   301F           00355     movlw   0x1F
+00EF   2???           00356     call    Set_Dutycycle
+00F0   2???           00357     call    Delay_75ms
+00F1   3000           00358     movlw   0x00
+00F2   2???           00359     call    Set_Dutycycle
+00F3   2???           00360     call    Delay_75ms
+00F4   1683           00361     banksel PR2
+00F5   3037           00362     movlw   0x37
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00F6   0092           00363     movwf   PR2
+00F7   1283           00364     banksel GPIO
+00F8   301F           00365     movlw   0x1F
+00F9   2???           00366     call    Set_Dutycycle
+00FA   2???           00367     call    Delay_75ms
+00FB   3000           00368     movlw   0x00
+00FC   2???           00369     call    Set_Dutycycle
+00FD   0008           00370     return
+                      00371 
+00FE                  00372 Alarm_VMax
+00FE   1683           00373     banksel PR2
+00FF   3045           00374     movlw   0x45
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0100   0092           00375     movwf   PR2
+0101   1283           00376     banksel GPIO
+0102   301F           00377     movlw   0x1F
+0103   2???           00378     call    Set_Dutycycle
+0104   2???           00379     call    Delay_75ms
+0105   3000           00380     movlw   0x00
+0106   2???           00381     call    Set_Dutycycle
+0107   2???           00382     call    Delay_75ms
+0108   301F           00383     movlw   0x1F
+0109   2???           00384     call    Set_Dutycycle
+010A   2???           00385     call    Delay_75ms
+010B   3000           00386     movlw   0x00
+010C   2???           00387     call    Set_Dutycycle
+010D   2???           00388     call    Delay_75ms
+010E   1683           00389     banksel PR2
+010F   3037           00390     movlw   0x37
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0110   0092           00391     movwf   PR2
+0111   1283           00392     banksel GPIO
+0112   301F           00393     movlw   0x1F
+0113   2???           00394     call    Set_Dutycycle
+0114   2???           00395     call    Delay_75ms
+0115   3000           00396     movlw   0x00
+0116   2???           00397     call    Set_Dutycycle
+0117   0008           00398     return
+                      00399 
+0118                  00400 Alarm_TMax
+0118   301F           00401     movlw   0x1F
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0119   2???           00402     call    Set_Dutycycle
+011A   2???           00403     call    Delay_75ms
+011B   3000           00404     movlw   0x00
+011C   2???           00405     call    Set_Dutycycle
+011D   2???           00406     call    Delay_75ms
+011E   301F           00407     movlw   0x1F
+011F   2???           00408     call    Set_Dutycycle
+0120   2???           00409     call    Delay_75ms
+0121   3000           00410     movlw   0x00
+0122   2???           00411     call    Set_Dutycycle
+0123   2???           00412     call    Delay_75ms
+0124   301F           00413     movlw   0x1F
+0125   2???           00414     call    Set_Dutycycle
+0126   2???           00415     call    Delay_75ms
+0127   3000           00416     movlw   0x00
+0128   2???           00417     call    Set_Dutycycle
+0129   0008           00418     return
+                      00419 
+012A                  00420 LPF_ADC_Read
+                      00421 ;ADC0 - volts
+                      00422     ;Desplazamiento de registros
+012A   304C           00423     movlw   0x4C                            ;  desplaza los registros LPF
+012B   0084           00424     movwf   FSR
+012C   0800           00425     movf    INDF,W
+012D   0A84           00426     incf    FSR,F
+012E   0080           00427     movwf   INDF
+012F   1F04           00428     btfss   FSR,6                           ;  es el ultimo desplazamiento?
+0130   2???           00429     goto    $+4                             ;  si a acabado salta
+0131   0384           00430     decf    FSR,F                           ;  si no direcciona el siguiente registro y vuelve al bucle
+0132   0384           00431     decf    FSR,F
+0133   2???           00432     goto    $-7
+                      00433     ;Lectura del ADC
+0134   081F           00434     movf    ADCON0,W                        ; ADC0
+0135   39F3           00435     andlw   0xF3
+0136   009F           00436     movwf   ADCON0
+0137   2???           00437     call    Delay_4us
+0138   149F           00438     bsf     ADCON0,GO                       ;  inicia ciclo del ADC
+0139   189F           00439     btfsc   ADCON0,GO                       ;  espera hasta que complete el ciclo
+013A   2???           00440     goto    $-1
+013B   2???           00441     call    Delay_4us
+013C   081E           00442     movf    ADRESH,W                        ;  lee el MS byte del ADC
+013D   00BE           00443     movwf   ADC0_LPFReg1
+                      00444     ;Cálculo del LPF
+013E   083E           00445     movf    ADC0_LPFReg1,W                 ;  inicia el cálculo
+013F   00CF           00446     movwf   ADC0_Accumulator_LO                  ;  el acumulador es el sumatorio de los registros
+0140   304E           00447     movlw   0x4E
+0141   0084           00448     movwf   FSR
+0142   0384           00449     decf    FSR,F
+0143   0800           00450     movf    INDF,W
+0144   07CF           00451     addwf   ADC0_Accumulator_LO,F
+0145   1803           00452     btfsc   STATUS,C                        ;  si el acumulador desborda, +1 al MSByte
+0146   0ACE           00453     incf    ADC0_Accumulator_HI,F
+0147   1B04           00454     btfsc   FSR,6                           ;  comprueba si ha sumado todos los registros
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0148   2???           00455     goto    $-6
+0149   0CCF           00456     rrf     ADC0_Accumulator_LO,F                ;  división entre 16
+014A   0CCF           00457     rrf     ADC0_Accumulator_LO,F
+014B   0CCF           00458     rrf     ADC0_Accumulator_LO,F
+014C   0C4F           00459     rrf     ADC0_Accumulator_LO,W
+014D   390F           00460     andlw   0x0F
+014E   00CF           00461     movwf   ADC0_Accumulator_LO
+014F   0E4E           00462     swapf   ADC0_Accumulator_HI,W
+0150   39F0           00463     andlw   0xF0
+0151   04CF           00464     iorwf   ADC0_Accumulator_LO,F
+0152   084F           00465     movf    ADC0_Accumulator_LO,W
+0153   00F7           00466     movwf   Dutycycle_ADC0                   ;  mueve el resultado a la salida
+0154   01CF           00467     clrf    ADC0_Accumulator_LO                  ;  limpia los registros para la siguiente ejecución
+0155   01CE           00468     clrf    ADC0_Accumulator_HI
+                      00469 ;ADC1 - temp
+                      00470     ;Desplazamiento de registros
+0156   306C           00471     movlw   0x6C                            ;  desplaza los registros LPF
+0157   0084           00472     movwf   FSR
+0158   0800           00473     movf    INDF,W
+0159   0A84           00474     incf    FSR,F
+015A   0080           00475     movwf   INDF
+015B   1E84           00476     btfss   FSR,5                           ;  es el ultimo desplazamiento?
+015C   2???           00477     goto    $+4                             ;  si a acabado salta
+015D   0384           00478     decf    FSR,F                           ;  si no direcciona el siguiente registro y vuelve al bucle
+015E   0384           00479     decf    FSR,F
+015F   2???           00480     goto    $-7
+                      00481     ;Lectura del ADC
+0160   081F           00482     movf    ADCON0,W                        ; ADC1
+0161   39F3           00483     andlw   0xF3
+0162   3804           00484     iorlw   0x04
+0163   009F           00485     movwf   ADCON0
+0164   2???           00486     call    Delay_4us
+0165   149F           00487     bsf     ADCON0,GO                       ;  inicia ciclo del ADC
+0166   189F           00488     btfsc   ADCON0,GO                       ;  espera hasta que complete el ciclo
+0167   2???           00489     goto    $-1
+0168   2???           00490     call    Delay_4us
+0169   081E           00491     movf    ADRESH,W                        ;  lee el MS byte del ADC
+016A   00DE           00492     movwf   ADC1_LPFReg1
+                      00493     ;Cálculo del LPF
+016B   085E           00494     movf    ADC1_LPFReg1,W                 ;  inicia el cálculo
+016C   00EF           00495     movwf   ADC1_Accumulator_LO                  ;  el acumulador es el sumatorio de los registros
+016D   306E           00496     movlw   0x6E
+016E   0084           00497     movwf   FSR
+016F   0384           00498     decf    FSR,F
+0170   0800           00499     movf    INDF,W
+0171   07EF           00500     addwf   ADC1_Accumulator_LO,F
+0172   1803           00501     btfsc   STATUS,C                        ;  si el acumulador desborda, +1 al MSByte
+0173   0AEE           00502     incf    ADC1_Accumulator_HI,F
+0174   1A84           00503     btfsc   FSR,5                           ;  comprueba si ha sumado todos los registros
+0175   2???           00504     goto    $-6
+0176   0CEF           00505     rrf     ADC1_Accumulator_LO,F                ;  división entre 16
+0177   0CEF           00506     rrf     ADC1_Accumulator_LO,F
+0178   0CEF           00507     rrf     ADC1_Accumulator_LO,F
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0179   0C6F           00508     rrf     ADC1_Accumulator_LO,W
+017A   390F           00509     andlw   0x0F
+017B   00EF           00510     movwf   ADC1_Accumulator_LO
+017C   0E6E           00511     swapf   ADC1_Accumulator_HI,W
+017D   39F0           00512     andlw   0xF0
+017E   04EF           00513     iorwf   ADC1_Accumulator_LO,F
+017F   086F           00514     movf    ADC1_Accumulator_LO,W
+0180   00F8           00515     movwf   Dutycycle_ADC1                   ;  mueve el resultado a la salida
+0181   01EF           00516     clrf    ADC1_Accumulator_LO                  ;  limpia los registros para la siguiente ejecución
+0182   01EE           00517     clrf    ADC1_Accumulator_HI
+0183   0008           00518     return
+                      00519 
+0184                  00520 Set_Dutycycle
+0184   00F9           00521     movwf   Dutycycle_HI                    ;  se guarda en variable para el registro MS
+0185   00FA           00522     movwf   Dutycycle_LO                    ;  se guarda en variable para el registro LS
+0186   0CF9           00523     rrf     Dutycycle_HI,F                  ;  procesamiento para ajustar al registro MS
+0187   0CF9           00524     rrf     Dutycycle_HI,F
+0188   303F           00525     movlw   0x3F
+0189   05F9           00526     andwf   Dutycycle_HI,F
+018A   0EFA           00527     swapf   Dutycycle_LO,F                  ;  procesamiento para ajustar al registro LS
+018B   3030           00528     movlw   0x30
+018C   05FA           00529     andwf   Dutycycle_LO,F
+018D   300C           00530     movlw   0x0C                            ;  máscara de bits establecidos en setup
+018E   04FA           00531     iorwf   Dutycycle_LO,F
+018F   0879           00532     movf    Dutycycle_HI,W                  ;  mueve el factor de servicio al registro MS
+0190   0093           00533     movwf   CCPR1L
+0191   087A           00534     movf    Dutycycle_LO,W                  ;  mueve el factor de servicio al registro LS
+0192   0095           00535     movwf   CCP1CON
+0193   0008           00536     return
+                      00537 
+0194                  00538 Delay_4us
+0194   2???           00539     goto    $+1
+0195   2???           00540     goto    $+1
+0196   0008           00541     return
+                      00542 
+0197                  00543 Delay_75ms
+0197   302E           00544         movlw   0x2E
+0198   00F3           00545         movwf   DLoop1
+0199   3076           00546         movlw   0x76
+019A   00F4           00547         movwf   DLoop2
+019B                  00548 Delay_75ms_0
+019B   0BF3           00549         decfsz  DLoop1, f
+019C   2???           00550         goto    $+2
+019D   0BF4           00551         decfsz  DLoop2, f
+019E   2???           00552         goto    Delay_75ms_0
+019F   2???           00553         goto    $+1
+01A0   0000           00554         nop
+01A1   0008           00555         return
+                      00556 
+01A2                  00557 Delay_250ms
+01A2   3003           00558         movlw   0x03
+01A3   00F3           00559         movwf   DLoop1
+01A4   3018           00560         movlw   0x18
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01A5   00F4           00561         movwf   DLoop2
+01A6   3002           00562         movlw   0x02
+01A7   00F5           00563         movwf   DLoop3
+01A8                  00564 Delay_250ms_0
+01A8   0BF3           00565         decfsz  DLoop1, f
+01A9   2???           00566         goto    $+2
+01AA   0BF4           00567         decfsz  DLoop2, f
+01AB   2???           00568         goto    $+2
+01AC   0BF5           00569         decfsz  DLoop3, f
+01AD   2???           00570         goto    Delay_250ms_0
+01AE   2???           00571         goto    $+1
+01AF   0008           00572         return
+                      00573 
+                      00574 ;------------------------------------------------------------------------------
+                      00575 ;End of program
+30C4                  00576     END
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADC0_Accumulator_HI               0000004E
+ADC0_Accumulator_LO               0000004F
+ADC0_LPFReg1                      0000003E
+ADC0_LPFReg10                     00000047
+ADC0_LPFReg11                     00000048
+ADC0_LPFReg12                     00000049
+ADC0_LPFReg13                     0000004A
+ADC0_LPFReg14                     0000004B
+ADC0_LPFReg15                     0000004C
+ADC0_LPFReg16                     0000004D
+ADC0_LPFReg2                      0000003F
+ADC0_LPFReg3                      00000040
+ADC0_LPFReg4                      00000041
+ADC0_LPFReg5                      00000042
+ADC0_LPFReg6                      00000043
+ADC0_LPFReg7                      00000044
+ADC0_LPFReg8                      00000045
+ADC0_LPFReg9                      00000046
+ADC1_Accumulator_HI               0000006E
+ADC1_Accumulator_LO               0000006F
+ADC1_LPFReg1                      0000005E
+ADC1_LPFReg10                     00000067
+ADC1_LPFReg11                     00000068
+ADC1_LPFReg12                     00000069
+ADC1_LPFReg13                     0000006A
+ADC1_LPFReg14                     0000006B
+ADC1_LPFReg15                     0000006C
+ADC1_LPFReg16                     0000006D
+ADC1_LPFReg2                      0000005F
+ADC1_LPFReg3                      00000060
+ADC1_LPFReg4                      00000061
+ADC1_LPFReg5                      00000062
+ADC1_LPFReg6                      00000063
+ADC1_LPFReg7                      00000064
+ADC1_LPFReg8                      00000065
+ADC1_LPFReg9                      00000066
+ADCON0                            0000001F
+ADCS0                             00000004
+ADCS1                             00000005
+ADCS2                             00000006
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ALARM_STAT                        00000072
+ANS0                              00000000
+ANS1                              00000001
+ANS2                              00000002
+ANS3                              00000003
+ANSEL                             0000009F
+Alarm_TMax                        00000118
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+Alarm_VMax                        000000FE
+Alarm_VMin                        000000E4
+Aux                               0000007B
+C                                 00000000
+CCP1CON                           00000015
+CCP1IE                            00000005
+CCP1IF                            00000005
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCPR1                             00000013
+CCPR1H                            00000014
+CCPR1L                            00000013
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CINV                              00000004
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON0                            00000019
+CMCON1                            0000001A
+CMIE                              00000003
+CMIF                              00000003
+CMSYNC                            00000000
+COUT                              00000006
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DLoop1                            00000073
+DLoop2                            00000074
+DLoop3                            00000075
+Delay_250ms                       000001A2
+Delay_250ms_0                     000001A8
+Delay_4us                         00000194
+Delay_75ms                        00000197
+Delay_75ms_0                      0000019B
+Dutycycle_ADC0                    00000077
+Dutycycle_ADC1                    00000078
+Dutycycle_HI                      00000079
+Dutycycle_LO                      0000007A
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDAT                             0000009A
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FSR                               00000004
+GIE                               00000007
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+GP0                               00000000
+GP1                               00000001
+GP2                               00000002
+GP3                               00000003
+GP4                               00000004
+GP5                               00000005
+GPIE                              00000003
+GPIF                              00000000
+GPIO                              00000005
+G_000                             00000071
+G_016                             0000007B
+G_033                             00000082
+G_050                             00000087
+G_066                             0000008C
+G_083                             00000090
+G_100                             00000093
+HTS                               00000002
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOC                               00000096
+IOC0                              00000000
+IOC1                              00000001
+IOC2                              00000002
+IOC3                              00000003
+IOC4                              00000004
+IOC5                              00000005
+IOCA                              00000096
+IOCA0                             00000000
+IOCA1                             00000001
+IOCA2                             00000002
+IOCA3                             00000003
+IOCA4                             00000004
+IOCA5                             00000005
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+LPF_ADC_Read                      0000012A
+LTS                               00000001
+Max_Temp                          00000026
+Max_Volt                          00000093
+Min_Volt                          0000006E
+NOT_BOD                           00000000
+NOT_DONE                          00000001
+NOT_GPPU                          00000007
+NOT_PD                            00000003
+NOT_POR                           00000001
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OPTION_REG                        00000081
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000002
+OSFIF                             00000002
+OSTS                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIR1                              0000000C
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+SBODEN                            00000004
+SCS                               00000000
+STATUS                            00000003
+STATUS_ISR                        00000071
+SWDTEN                            00000000
+Set_Dutycycle                     00000184
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GE                              00000006
+T1GINV                            00000007
+T1GSS                             00000001
+T1IE                              00000000
+T1IF                              00000000
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+T2IE                              00000001
+T2IF                              00000001
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISIO                            00000085
+TRISIO0                           00000000
+TRISIO1                           00000001
+TRISIO2                           00000002
+TRISIO3                           00000003
+TRISIO4                           00000004
+TRISIO5                           00000005
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TmCount                           00000076
+ULPWUE                            00000005
+VCFG                              00000006
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000099
+VREN                              00000007
+VRR                               00000005
+W                                 00000000
+WDTCON                            00000018
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPU                               00000095
+WPU0                              00000000
+WPU1                              00000001
+WPU2                              00000002
+WPU4                              00000004
+WPU5                              00000005
+WPUA                              00000095
+WPUA0                             00000000
+WPUA1                             00000001
+WPUA2                             00000002
+WPUA4                             00000004
+WPUA5                             00000005
+WR                                00000001
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+WREN                              00000002
+WRERR                             00000003
+W_ISR                             00000070
+Z                                 00000002
+_BOD_NSLEEP                       00003EFF
+_BOD_OFF                          00003CFF
+_BOD_ON                           00003FFF
+_BOD_SBODEN                       00003DFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_CONFIG                           00002007
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRCCLK                    00003FFF
+_FOSC_EXTRCIO                     00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTOSCCLK                   00003FFD
+_FOSC_INTOSCIO                    00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_MAIN_PROG_0023                   00000023
+_MAIN_PROG_002C                   0000002C
+_MAIN_PROG_002F                   0000002F
+_MAIN_PROG_0048                   00000048
+_MAIN_PROG_008A                   0000008A
+_MAIN_PROG_008E                   0000008E
+_MAIN_PROG_0092                   00000092
+_MAIN_PROG_0096                   00000096
+MPASM  5.52  /HOME/KWENDENARMO/MPLABXPROJECTS   10-18-2013  21:10:36         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_MAIN_PROG_009A                   0000009A
+_MAIN_PROG_00A8                   000000A8
+_MAIN_PROG_00BB                   000000BB
+_MAIN_PROG_00C0                   000000C0
+_MAIN_PROG_00C2                   000000C2
+_MAIN_PROG_00D4                   000000D4
+_MAIN_PROG_00D8                   000000D8
+_MAIN_PROG_00DC                   000000DC
+_MAIN_PROG_0130                   00000130
+_MAIN_PROG_0133                   00000133
+_MAIN_PROG_013A                   0000013A
+_MAIN_PROG_0148                   00000148
+_MAIN_PROG_015C                   0000015C
+_MAIN_PROG_015F                   0000015F
+_MAIN_PROG_0167                   00000167
+_MAIN_PROG_0175                   00000175
+_MAIN_PROG_0194                   00000194
+_MAIN_PROG_0195                   00000195
+_MAIN_PROG_019C                   0000019C
+_MAIN_PROG_019F                   0000019F
+_MAIN_PROG_01A9                   000001A9
+_MAIN_PROG_01AB                   000001AB
+_MAIN_PROG_01AE                   000001AE
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FF9
+__12F683                          00000001
+isr                               00000000
+loop                              000000BA
+main                              00000077
+setup                             0000000D
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :    10 reported,     0 suppressed
+
+

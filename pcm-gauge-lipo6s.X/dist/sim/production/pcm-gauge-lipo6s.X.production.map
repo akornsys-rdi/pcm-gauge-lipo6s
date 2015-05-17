@@ -1,0 +1,124 @@
+MPLINK 4.50, Linker
+Linker Map File - Created Fri Oct 18 21:10:36 2013
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                 RES_VECT       code   0x000000    program   0x000004
+                   .cinit    romdata   0x000002    program   0x000004
+                 ISR_VECT       code   0x000004    program   0x000002
+                MAIN_PROG       code   0x000005    program   0x000360
+.config_2007_BUILD/SIM/PRODUCTION/MAIN.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0001b4      
+                            0x002007    0x002007      
+            438 out of 2310 program addresses used, program memory utilization is 18%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+               Alarm_TMax   0x00011d    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Alarm_VMax   0x000103    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Alarm_VMin   0x0000e9    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+              Delay_250ms   0x0001a7    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+            Delay_250ms_0   0x0001ad    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                Delay_4us   0x000199    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Delay_75ms   0x00019c    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+             Delay_75ms_0   0x0001a0    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+             LPF_ADC_Read   0x00012f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+            Set_Dutycycle   0x000189    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0023   0x000028    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_002C   0x000031    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_002F   0x000034    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0048   0x00004d    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_008A   0x00008f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_008E   0x000093    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0092   0x000097    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0096   0x00009b    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_009A   0x00009f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00A8   0x0000ad    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00BB   0x0000c0    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00C0   0x0000c5    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00C2   0x0000c7    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00D4   0x0000d9    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00D8   0x0000dd    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00DC   0x0000e1    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0130   0x000135    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0133   0x000138    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_013A   0x00013f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0148   0x00014d    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_015C   0x000161    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_015F   0x000164    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0167   0x00016c    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0175   0x00017a    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0194   0x000199    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0195   0x00019a    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_019C   0x0001a1    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_019F   0x0001a4    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_01A9   0x0001ae    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_01AB   0x0001b0    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_01AE   0x0001b3    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                      isr   0x000005    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                     loop   0x0000bf    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                     main   0x00007c    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                    setup   0x000012    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                      isr   0x000005    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                    setup   0x000012    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0023   0x000028    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_002C   0x000031    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_002F   0x000034    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0048   0x00004d    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                     main   0x00007c    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_008A   0x00008f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_008E   0x000093    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0092   0x000097    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0096   0x00009b    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_009A   0x00009f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00A8   0x0000ad    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                     loop   0x0000bf    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00BB   0x0000c0    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00C0   0x0000c5    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00C2   0x0000c7    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00D4   0x0000d9    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00D8   0x0000dd    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_00DC   0x0000e1    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Alarm_VMin   0x0000e9    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Alarm_VMax   0x000103    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Alarm_TMax   0x00011d    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+             LPF_ADC_Read   0x00012f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0130   0x000135    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0133   0x000138    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_013A   0x00013f    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0148   0x00014d    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_015C   0x000161    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_015F   0x000164    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0167   0x00016c    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0175   0x00017a    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+            Set_Dutycycle   0x000189    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+                Delay_4us   0x000199    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0194   0x000199    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_0195   0x00019a    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+               Delay_75ms   0x00019c    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+             Delay_75ms_0   0x0001a0    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_019C   0x0001a1    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_019F   0x0001a4    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+              Delay_250ms   0x0001a7    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+            Delay_250ms_0   0x0001ad    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_01A9   0x0001ae    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_01AB   0x0001b0    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+          _MAIN_PROG_01AE   0x0001b3    program     static /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm
+
+

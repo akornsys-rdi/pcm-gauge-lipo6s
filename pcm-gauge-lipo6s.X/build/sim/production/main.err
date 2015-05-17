@@ -1,0 +1,10 @@
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 121 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 129 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 131 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 134 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 145 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 207 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 353 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 363 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 375 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] /home/kwendenarmo/MPLABXProjects/pcm-gauge-lipo6s.X/main.asm 391 : Register in operand not in bank 0.  Ensure that bank bits are correct.
